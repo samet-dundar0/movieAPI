@@ -1,33 +1,51 @@
-import requests
+import requests  # requests kütüphanesini import ediyoruz, API ile HTTP istekleri yapmak için kullanılır.
 
 
 class TheMovieDB:
-    def __init__(self, url, key):
-        self.url = url
-        self.key = key
+    # TheMovieDB sınıfı, TMDb API'sine yapılacak istekleri tanımlar.
 
-    def popularMovie(self):
-        response = requests.get(
-            f"{self.url}movie/popular",
-            params={"api_key": self.key, "language": "en-US", "page": 1},
-        )
-        return response.json()
+    def __init__(self, url, key):
+        """
+        Sınıfın başlatıcı fonksiyonu, URL ve API anahtarını alır.
+        """
+        self.url = url  # TMDb API URL'sini alır
+        self.key = key  # API anahtarını alır
     
+    def popularMovie(self):
+        """
+        Popüler filmleri almak için API'den veri çeker.
+        """
+        # 'movie/popular' endpoint'ine HTTP GET isteği gönderiyor.
+        response = requests.get(
+            f"{self.url}movie/popular",  # API URL'si ve endpoint
+            params={"api_key": self.key, "language": "en-US", "page": 1},  # Parametreler
+        )
+        return response.json() 
+
     def nowPlayingMovie(self):
+        """
+        Şu anda gösterimde olan filmleri almak için API'den veri çeker.
+        """
         response = requests.get(
             f"{self.url}movie/now_playing",
             params={"api_key": self.key, "language": "en-US", "page": 1},
         )
         return response.json()
-    
+
     def upcomingMovie(self):
+        """
+        Yakında çıkacak filmleri almak için API'den veri çeker.
+        """
         response = requests.get(
             f"{self.url}movie/upcoming",
             params={"api_key": self.key, "language": "en-US", "page": 1},
         )
         return response.json()
-    
+
     def topRatedMovie(self):
+        """
+        En yüksek puanlı filmleri almak için API'den veri çeker.
+        """
         response = requests.get(
             f"{self.url}movie/top_rated",
             params={"api_key": self.key, "language": "en-US", "page": 1},
@@ -35,45 +53,54 @@ class TheMovieDB:
         return response.json()
 
 
-url = "https://api.themoviedb.org/3/"
-key = "699895881858120d2189b9c424f9b05b"
+
+url = "https://api.themoviedb.org/3/"  # TMDb API URL'si
+key = "699895881858120d2189b9c424f9b05b"  # API anahtarı (kişisel anahtarınızı burada kullanmalısınız)
+
+# TheMovieDB sınıfını başlatıyoruz
 movie = TheMovieDB(url, key)
+
+# Popüler, şu anda oynayan, yakında çıkacak ve en çok oylanan filmleri alıyoruz
 popularMovie = movie.popularMovie()
-nowPlayingMovie=movie.nowPlayingMovie()
-upcomingMovie=movie.upcomingMovie()
-topRatedMovie=movie.topRatedMovie()
-
-
+nowPlayingMovie = movie.nowPlayingMovie()
+upcomingMovie = movie.upcomingMovie()
+topRatedMovie = movie.topRatedMovie()
 
 
 while True:
     
-    secim=input("1-Popüler filmler\n2-Yeni filmler\n3-Yakında çıkacak Filmler\n4-En çok oynlana filmler\n5-çıkış\nseçim yapınız(1-5 arası kabul edilmektedir):")
+    secim = input("1-Popüler filmler\n2-Yeni filmler\n3-Yakında çıkacak Filmler\n4-En çok oylanan filmler\n5-Çıkış\nSeçim yapınız (1-5 arası kabul edilmektedir):")
     
     try:
-    
-        if int(secim)==1:
+        # Kullanıcıdan alınan değeri int'e dönüştürüp hangi kategoriye bakmak istediğini belirliyoruz.
+        if int(secim) == 1:
+            # Popüler filmler listesini yazdırıyoruz
             for movie in popularMovie["results"]:
-                    print(f"film adı: {movie["title"]} İMDb:{movie["vote_average"]}  Tarih={movie["release_date"]}")
-        elif int(secim)==2:
+                # Her bir filmin adını, IMDb puanını ve çıkış tarihini yazdırıyoruz
+                print(f"Film adı: {movie['title']} IMDb: {movie['vote_average']} Tarih: {movie['release_date']}")
+        elif int(secim) == 2:
+            # Şu anda gösterimde olan filmleri yazdırıyoruz
             for movie in nowPlayingMovie["results"]:
-                    print(f"film adı: {movie["title"]} İMDb:{movie["vote_average"]} Tarih={movie["release_date"]}")
-        elif int(secim)==3:
+                print(f"Film adı: {movie['title']} IMDb: {movie['vote_average']} Tarih: {movie['release_date']}")
+        elif int(secim) == 3:
+            # Yakında çıkacak filmleri yazdırıyoruz
             for movie in upcomingMovie["results"]:
-                    print(f"film adı: {movie["title"]} İMDb:{movie["vote_average"]} Tarih={movie["release_date"]}")
-        elif int(secim)==4:
+                print(f"Film adı: {movie['title']} IMDb: {movie['vote_average']} Tarih: {movie['release_date']}")
+        elif int(secim) == 4:
+            # En çok oylanan filmleri yazdırıyoruz
             for movie in topRatedMovie["results"]:
-                    print(f"film adı: {movie["title"]} İMDb:{movie["vote_average"]} Tarih={movie["release_date"]}")
-        elif int(secim)==5:
+                print(f"Film adı: {movie['title']} IMDb: {movie['vote_average']} Tarih: {movie['release_date']}")
+        elif int(secim) == 5:
+            # Programdan çıkmak için döngüyü sonlandırıyoruz
             break
         else:
-            print("lütfen 1-5 arası sayı girin")
-            
-    except:
-        print("lütfen 1-5 arası sayı girin")
-        
-        
+            # Geçersiz seçim yapıldığında hata mesajı veriyoruz
+            print("Lütfen 1-5 arası bir sayı girin.")
     
+    except:
+        # Kullanıcı geçersiz bir giriş yaptığında hata mesajı veriyoruz
+        print("Lütfen 1-5 arası bir sayı girin.")
+
 
       
 
